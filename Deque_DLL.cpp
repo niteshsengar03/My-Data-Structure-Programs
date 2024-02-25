@@ -1,5 +1,6 @@
 #include<iostream>
 using namespace std;
+#define UNDERFLOW 1
 
 // Deque with Doubly Linkly List
 struct node
@@ -24,7 +25,7 @@ class Deque_DLL
         bool isEmpty();
         ~Deque_DLL();
 
-        // Define a copy constructor to implement deep copy
+        // Define a copy construtor to implement deep copy
         
         // Define a copy assignment operator to implement deep copy
 
@@ -43,7 +44,7 @@ void Deque_DLL::InsertAtFirst(int data)
     n->item = data;
 
     //list is empty
-    if(front==rear && front== NULL )
+    if(front== NULL )
     {
         front = n;
         rear = n;
@@ -63,7 +64,7 @@ void Deque_DLL::InsertAtlast(int data)
     n->prev = NULL;
     n->item = data;
     //list is empty
-    if(front==rear && front== NULL )
+    if( rear== NULL )
     {
         front = n;
         rear = n;
@@ -88,10 +89,8 @@ void Deque_DLL::deleteAtFront()
     }
     else
     {
-    node *temp;
-    temp = front;
     front = front->next;
-    delete temp;
+    delete front->prev;
     front -> prev = NULL;
     }
     
@@ -108,20 +107,22 @@ void Deque_DLL::deleteAtLast()
     }
     else
     {
-        node *temp;
-        temp = rear;
         rear = rear->prev;
+        delete rear->next;
         rear->next = NULL;
-        delete temp;
     }
     
 }
 int Deque_DLL::getFirst()
 {
+    if(front==NULL)
+        throw UNDERFLOW ;
     return front->item;
 }
 int Deque_DLL::getLast()
 {
+    if(rear==NULL)
+        throw UNDERFLOW ;
     return rear->item;
 }
 bool Deque_DLL::isEmpty()
@@ -156,11 +157,26 @@ int main()
     d1.InsertAtlast(20);
 
     // Deleting element from the front
-    // d1.deleteAtLast();
-    // d1.deleteAtLast();
+    d1.deleteAtLast();
+    d1.deleteAtLast();
+    try{
     int a= d1.getFirst();
     cout<<a<<endl;
-    cout<<d1.getLast()<<endl;
+    }
+    catch (int e)
+    {
+        if(e==UNDERFLOW)
+            cout<< "list is empty"<<endl;
+    }
+    try{
+          cout<<d1.getLast()<<endl;
+    }
+    catch(int e)
+    {
+        if(e==UNDERFLOW)
+            cout<< "list is empty"<<endl;;
+    }
+  
     cout<< d1.isEmpty();
     return 0;
 }

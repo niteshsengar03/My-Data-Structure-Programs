@@ -1,5 +1,6 @@
 #include<iostream>
 using namespace std;
+#define EMPTY_QUEUE 1
 
 // Priority Queue using Singly Link List
 struct node
@@ -13,16 +14,21 @@ class priorityQueue
 {
     private:
         node *start;
-        int count = 0;
     public:
         priorityQueue();
         void Insertion(int , int);
+        void Delete();
+        int getItem();
+        int getHighestPriority();
+        ~priorityQueue();
+        bool isEmpty();
+        
+        //define a copy constructor to implement deep copy
+        // define a copy assignment operator to implement deep copy
 };
 
 priorityQueue::priorityQueue()
 {
-    // if(start!=NULL)
-    //     delete start;
     start = NULL;
 }
 void priorityQueue:: Insertion(int priority, int data)
@@ -31,91 +37,63 @@ void priorityQueue:: Insertion(int priority, int data)
     node *n = new node;
     n->priorityNo = priority;
     n->item = data;
-    n->next = NULL;
 
-    node *temp1 = start;
-    // list is empty
-    if(count == 0)
+    node *temp;
+    // list is empty or node is adding in first (jb already list mein kuch nodes hai)
+    if(start== NULL || start->priorityNo < n->priorityNo)
     {
         n->next = start;
         start = n;
-        count++;
     }
-    // only one node is there
-    else if(count==1)
+    else 
     {
-        if(temp1->priorityNo < n->priorityNo)
+        temp = start;
+        while(temp->next!=NULL)
         {
-            n->next = temp1;
-            start = n;
-            count++;
-        }
-        else
-        {
-            temp1->next = n;
-            count++;
-        }
-    }
-    ///Two node are present
-    // else if(count==2)
-    // {
-    // while(temp1->next!=0)
-    // {
-    //     if(temp1->priorityNo < n->priorityNo)
-    //         break;
-    //     else
-    //         temp1 = temp1->next;
-    // }  
-    // if(temp1 == start)
-    // {
-    //     n->next = temp1;
-    //     start = n;
-    // }  
-    // else if(temp1->next==NULL)
-    // {
-    //     temp1->next = n;
-    // }
-    // }
-    else if(count>1)
-    {
-      temp1 = start;
-       int no =0;
-        while(temp1->next!=NULL)
-        {
-            if(temp1->next->priorityNo<n->priorityNo)
+            if(temp->next->priorityNo < n->priorityNo)
                 break;
-            else
-          {
-             temp1 = temp1->next;
-            no++;
-          }
-           
+            temp= temp->next;
         }
-        //insertion at first
-        if(temp1->priorityNo<n->priorityNo)
-        {
-        n->next = start;
-        start = n;
-        count++;
-        no++;
-        }
-        //insertion at last
-        else if(temp1->next==NULL)
-        {
-            temp1->next = n;
-            count++;
-            no++;
-        }
-        else
-        {
-            n->next = temp1->next;
-            temp1->next = n;
-            count++;
-            no++;
-        }
+        n->next = temp->next;
+        temp->next = n;
     }
 }
-
+void  priorityQueue::Delete()
+{
+    node *t;
+    if(start)
+    {
+        t = start;
+        start = start->next;
+        delete t;
+    }
+}
+int priorityQueue::getItem()
+{
+    if(start)
+        return start->item;
+    throw EMPTY_QUEUE;
+}
+int priorityQueue::getHighestPriority()
+{
+    if(start)
+        return start->priorityNo;
+    throw EMPTY_QUEUE;
+}
+priorityQueue::~priorityQueue()
+{
+    while (start)
+    {
+        Delete();
+    }
+}
+bool priorityQueue::isEmpty()
+{
+    if(start == NULL)
+        return true;
+    else 
+        return false;
+}
 int main()
 {
     priorityQueue q1;
@@ -123,6 +101,14 @@ int main()
     q1.Insertion(12,12);
     q1.Insertion(2,2);
     q1.Insertion(11,11);
-
+    q1.Delete();
+    try{
+    cout<<q1.getItem()<<endl;
+    }
+    catch(int  e)
+    {
+        if(e)
+        cout<<"Queue is empty";
+    }
     return 0;
 }
