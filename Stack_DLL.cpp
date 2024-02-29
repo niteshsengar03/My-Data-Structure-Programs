@@ -104,7 +104,6 @@ void Stack::pop()
             top->next=NULL;
             delete temp;
         }
-
     }
 }
 
